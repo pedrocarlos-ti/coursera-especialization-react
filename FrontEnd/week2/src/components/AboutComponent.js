@@ -9,19 +9,25 @@ import {
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
-function About(props) {
-  const leaders = props.leaders.map(leader => {
-    return <p>Leader {leader.name}</p>;
-  });
-
+function About({ leaders }) {
   function RenderLeader({ leaders }) {
     return (
-      <Media key={leaders}>
-        <Media left href="#">
-          <Media object data-src={leaders.image} alt={leaders.name}></Media>
-        </Media>
-        <Media body>{leaders}</Media>
-      </Media>
+      <div className="container">
+        {leaders.map(leader => (
+          <Media key={leader.id} className="ml-3">
+            <Media left>
+              <Media object src={leader.image} alt={leader.name} />
+            </Media>
+            <Media body className="ml-5 mb-3">
+              <Media heading>{leader.name}</Media>
+              <Media middle>
+                <p>{leader.designation}</p>
+                <p>{leader.description}</p>
+              </Media>
+            </Media>
+          </Media>
+        ))}
+      </div>
     );
   }
 
