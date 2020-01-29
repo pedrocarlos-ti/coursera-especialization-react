@@ -6,9 +6,117 @@ import {
   CardBody,
   CardTitle,
   Breadcrumb,
-  BreadcrumbItem
+  BreadcrumbItem,
+  Button,
+  Label,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  Row,
+  Col
 } from 'reactstrap';
+import { LocalForm, Control, Errors } from 'react-redux-form';
+
 import { Link } from 'react-router-dom';
+
+const maxLength = len => val => !val || val.length <= len;
+const minLength = len => val => val && val.length >= len;
+
+class CommentForm extends Component {
+  state = {
+    isOpen: false
+  };
+
+  toggleModal = () => {
+    this.setState({ isOpen: !this.state.isOpen });
+  };
+
+  handleLogin = values => {
+    alert(`
+      Values from form ${JSON.stringify(values)}
+    `);
+  };
+
+  render() {
+    return (
+      <div>
+        <Modal isOpen={this.state.isOpen} toggle={this.toggleModal}>
+          <ModalHeader toggle={this.toggleModal}>Submit Comment</ModalHeader>
+          <ModalBody>
+            <LocalForm onSubmit={v => this.handleLogin(v)}>
+              <Row className="form-group">
+                <Col>
+                  <Label htmlFor="rating">Rating</Label>
+                  <Control.select
+                    model=".rating"
+                    name="rating"
+                    id="rating"
+                    defaultValue="1"
+                    className="form-control"
+                  >
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                  </Control.select>
+                </Col>
+              </Row>
+
+              <Row className="form-group">
+                <Col>
+                  <Label htmlFor="name">Your Name</Label>
+                  <Control.text
+                    model=".name"
+                    name="name"
+                    id="name"
+                    placeholder="Type your name"
+                    className="form-control"
+                    validators={{
+                      minLength: minLength(2),
+                      maxLength: maxLength(15)
+                    }}
+                  />
+                  <Errors
+                    className="text-danger"
+                    model=".name"
+                    show="touched"
+                    messages={{
+                      minLength: 'Must be greater than 2 characters',
+                      maxLength: 'Must be 15 characters or less'
+                    }}
+                  />
+                </Col>
+              </Row>
+
+              <Row className="form-group">
+                <Col>
+                  <Label htmlFor="comment">Comment</Label>
+                  <Control.textarea
+                    model=".comment"
+                    name="comment"
+                    id="comment"
+                    className="form-control mb-3"
+                    placeholder="Type the message"
+                    rows={6}
+                  />
+                  <Button color="primary" type="submit">
+                    Submit
+                  </Button>
+                </Col>
+              </Row>
+            </LocalForm>
+          </ModalBody>
+        </Modal>
+
+        <Button outline onClick={this.toggleModal}>
+          <span className="fa fa-pencil mr-1" />
+          Submit Comment
+        </Button>
+      </div>
+    );
+  }
+}
 
 function RenderDish({ dish }) {
   if (dish != null) {
@@ -46,6 +154,7 @@ function RenderComments({ comments }) {
             </li>
           </ul>
         ))}
+        <CommentForm />
       </div>
     );
   } else {
@@ -58,7 +167,7 @@ const DishDetail = props => {
 
   if (dish != null) {
     return (
-      <div class="container">
+      <div className="container">
         <div className="row">
           <Breadcrumb>
             <BreadcrumbItem>
