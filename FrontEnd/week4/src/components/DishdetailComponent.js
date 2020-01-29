@@ -16,6 +16,7 @@ import {
   Col
 } from 'reactstrap';
 import { LocalForm, Control, Errors } from 'react-redux-form';
+import { Loading } from './LoadingComponent';
 
 import { Link } from 'react-router-dom';
 
@@ -168,7 +169,23 @@ function RenderComments({ dishId, comments, addComment }) {
 const DishDetail = props => {
   const { dish } = props;
 
-  if (dish != null) {
+  if (props.isLoading) {
+    return (
+      <div className="container">
+        <div className="row">
+          <Loading />
+        </div>
+      </div>
+    );
+  } else if (props.err) {
+    return (
+      <div className="container">
+        <div className="row">
+          <h4>{props.err}</h4>
+        </div>
+      </div>
+    );
+  } else if (dish != null) {
     return (
       <div className="container">
         <div className="row">
