@@ -20,6 +20,7 @@ function RenderCard({ item, isLoading, err }) {
   } else
     return (
       <Card>
+        {console.log('===' + item.image + '===')}
         <CardImg src={baseUrl + item.image} alt={item.name} />
         <CardBody>
           <CardTitle>{item.name}</CardTitle>
@@ -51,7 +52,11 @@ function Home(props) {
           />
         </div>
         <div className="col-12 col-md m-1">
-          <RenderCard item={props.leader} />
+          <RenderCard
+            item={props.leader}
+            isLoading={props.leadersLoading}
+            err={props.leadersErr}
+          />
         </div>
       </div>
     </div>

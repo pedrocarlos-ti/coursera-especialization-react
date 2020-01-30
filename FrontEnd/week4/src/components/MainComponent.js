@@ -14,7 +14,8 @@ import {
   addComment,
   fetchDishes,
   fetchComments,
-  fetchPromos
+  fetchPromos,
+  fetchLeaders
   //fetchDishesByAction
 } from '../redux/actions/ActionCreators';
 
@@ -31,6 +32,7 @@ const mapDispatchToProps = dispatch => ({
   fetchDishes: () => dispatch(fetchDishes()),
   fetchComments: () => dispatch(fetchComments()),
   fetchPromos: () => dispatch(fetchPromos()),
+  fetchLeaders: () => dispatch(fetchLeaders()),
   // fetchDishes: () => dispatch(fetchDishesByAction([]))
   resetFeedbackForm: () => dispatch(actions.reset('feedback'))
 });
@@ -40,9 +42,11 @@ class Main extends Component {
     this.props.fetchDishes();
     this.props.fetchComments();
     this.props.fetchPromos();
+    this.props.fetchLeaders();
   }
 
   render() {
+    console.log({ leaders: this.props.leaders });
     const HomePage = () => {
       return (
         <Home
@@ -54,7 +58,11 @@ class Main extends Component {
           }
           promosLoading={this.props.promotions.isLoading}
           promosErr={this.props.promotions.err}
-          leader={this.props.leaders.filter(leader => leader.featured)[0]}
+          leader={
+            this.props.leaders.leaders.filter(leader => leader.featured)[0]
+          }
+          leadersLoading={this.props.leaders.isLoading}
+          leadersErr={this.props.leaders.err}
         />
       );
     };
