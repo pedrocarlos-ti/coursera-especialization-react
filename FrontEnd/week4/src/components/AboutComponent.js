@@ -13,7 +13,7 @@ function About({ leaders }) {
   function RenderLeader({ leaders }) {
     return (
       <div className="container">
-        {leaders.map(leader => (
+        {leaders.leaders.map(leader => (
           <Media key={leader.id} className="ml-3">
             <Media left>
               <Media object src={leader.image} alt={leader.name} />
