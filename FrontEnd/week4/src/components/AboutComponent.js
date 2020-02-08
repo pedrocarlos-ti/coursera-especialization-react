@@ -8,6 +8,7 @@ import {
   Media
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
+import { baseUrl } from '../api/baseurl';
 
 function About({ leaders }) {
   function RenderLeader({ leaders }) {
@@ -16,7 +17,7 @@ function About({ leaders }) {
         {leaders.leaders.map(leader => (
           <Media key={leader.id} className="ml-3">
             <Media left>
-              <Media object src={leader.image} alt={leader.name} />
+              <Media object src={baseUrl + leader.image} alt={leader.name} />
             </Media>
             <Media body className="ml-5 mb-3">
               <Media heading>{leader.name}</Media>
