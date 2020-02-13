@@ -9,13 +9,17 @@ import {
 } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { baseUrl } from '../api/baseurl';
+import { FadeTransform, Fade, Stagger } from 'react-animation-components';
 
 function About({ leaders }) {
   function RenderLeader({ leaders }) {
     return (
       <div className="container">
         {leaders.leaders.map(leader => (
-          <Media key={leader.id} className="ml-3">
+        <FadeTransform key={leader.id} in transformProps={{
+            exitTransform: 'scale(0.5) translateY(-50%)'
+          }}>
+          <Media className="ml-3">
             <Media left>
               <Media object src={baseUrl + leader.image} alt={leader.name} />
             </Media>
@@ -27,6 +31,7 @@ function About({ leaders }) {
               </Media>
             </Media>
           </Media>
+          </FadeTransform>
         ))}
       </div>
     );

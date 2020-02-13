@@ -9,6 +9,33 @@ export const addComment = comment => ({
   }
 });
 
+export const postFeedback = feedback => dispatch => {
+  return fetch(baseUrl + 'feedback', {
+    method: 'POST',
+    body: JSON.stringify(feedback),
+    headers: {
+      'Content-type': 'application/json'
+    },
+    credentials: 'same-origin'
+  }).then(response => {
+    if (response.ok) {
+      return response;
+    } else {
+      let error = new Error(
+        'Error ' + response.status + ' : ' + response.statusText
+      );
+      error.response = response;
+      throw error;
+    }
+  },
+  error => {
+    let err = new Error(error.message);
+    throw err;
+  })
+  .then(response => response.json())
+  .then(response => alert('Thank you for your feedback!\n' + JSON.stringify(response)));
+};
+
 export const postComment = (dishId, rating, author, comment) => dispatch => {
   const newComment = {
     dishId,
