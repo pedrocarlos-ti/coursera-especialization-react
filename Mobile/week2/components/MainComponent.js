@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
 import {
   View,
   Platform,
@@ -8,20 +10,42 @@ import {
   StyleSheet,
   SafeAreaView
 } from 'react-native';
-import { DISHES } from '../shared/dishes';
-
 import {
   createStackNavigator,
   createDrawerNavigator,
   DrawerItems
 } from 'react-navigation';
+
 import { Icon } from 'react-native-elements';
+import { DISHES } from '../shared/dishes';
+import {
+  fetchDishes,
+  fetchComments,
+  fetchPromos,
+  fetchLeaders
+} from '../redux/ActionCreators';
 
 import Home from './HomeComponent';
 import Menu from './MenuComponent';
 import Dishdetail from './DishdetailComponent';
 import About from './AboutComponent';
 import Contact from './ContactComponent';
+
+const mapStateToProps = state => {
+  return {
+    dishes: state.dishes,
+    comments: state.comments,
+    promotions: state.promotions,
+    leaders: state.leaders
+  };
+};
+
+const mapDispatchToProps = dispatch => ({
+  fetchDishes: () => dispatch(fetchDishes()),
+  fetchComments: () => dispatch(fetchComments()),
+  fetchPromos: () => dispatch(fetchPromos()),
+  fetchLeaders: () => dispatch(fetchLeaders())
+});
 
 const HomeNavigator = createStackNavigator(
   {
@@ -219,6 +243,13 @@ class Main extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.fetchDishes();
+    this.props.fetchComments();
+    this.props.fetchPromos();
+    this.props.fetchLeaders();
+  }
+
   onDishSelect(dishId) {
     this.setState({ selectedDish: dishId });
   }
@@ -261,4 +292,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Main;
+export default connect(mapStateToProps, mapDispatchToProps)(Main);

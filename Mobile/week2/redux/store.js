@@ -6,16 +6,12 @@ import { comments } from './comments';
 import { promotions } from './promotions';
 import { leaders } from './leaders';
 
-const store = createStore(
-  combineReducers(
-    {
-      dishes,
-      comments,
-      promotions,
-      leaders
-    },
-    applyMiddleware(thunk, logger)
-  )
+export default store = createStore(
+  combineReducers({
+    dishes,
+    comments,
+    promotions,
+    leaders
+  }),
+  applyMiddleware(thunk, logger)
 );
-
-export default store;
