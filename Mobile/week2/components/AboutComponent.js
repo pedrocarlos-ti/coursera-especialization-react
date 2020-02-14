@@ -4,6 +4,7 @@ import { Card, ListItem } from 'react-native-elements';
 
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
+import { Loading } from './LoadingComponent';
 
 const style = {
   margin: 5
@@ -45,19 +46,41 @@ function Leadership({ item }) {
 
 class About extends Component {
   render() {
-    return (
-      <ScrollView style={{ marginBottom: 15 }}>
-        <History />
+    if (this.props.leaders.isLoading) {
+      return (
+        <ScrollView style={{ marginBottom: 15 }}>
+          <History />
 
-        <Card title="Comporate Leadership">
-          <FlatList
-            data={this.props.leaders.leaders}
-            renderItem={Leadership}
-            keyExtractor={item => item.id.toString()}
-          />
-        </Card>
-      </ScrollView>
-    );
+          <Card title="Comporate Leadership">
+            <Loading />
+          </Card>
+        </ScrollView>
+      );
+    } else if (this.props.leaders.errMess) {
+      return (
+        <ScrollView style={{ marginBottom: 15 }}>
+          <History />
+
+          <Card title="Comporate Leadership">
+            <Text>{this.props.leaders.errMess}</Text>
+          </Card>
+        </ScrollView>
+      );
+    } else {
+      return (
+        <ScrollView style={{ marginBottom: 15 }}>
+          <History />
+
+          <Card title="Comporate Leadership">
+            <FlatList
+              data={this.props.leaders.leaders}
+              renderItem={Leadership}
+              keyExtractor={item => item.id.toString()}
+            />
+          </Card>
+        </ScrollView>
+      );
+    }
   }
 }
 
