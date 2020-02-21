@@ -18,7 +18,20 @@ connect.then(db => {
     .then(dish => {
       console.log(dish);
 
-      return DishModel.find({}).exec();
+      dish.comments.push({
+        rating: 5,
+        comment: "This is a test comment",
+        author: "Joe Doe"
+      });
+
+      return dish.save();
+    })
+    .then(dish => {
+      return DishModel.findByIdAndUpdate(
+        dish._id,
+        { $set: { description: "Updated test" } },
+        { new: true }
+      ).exec();
     })
     .then(dishes => {
       console.log(dishes);
