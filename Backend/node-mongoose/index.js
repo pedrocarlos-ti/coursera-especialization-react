@@ -42,6 +42,6 @@ connect.then(db => {
       return mongoose.connection.close();
     })
     .catch(err => {
-      console.log(err);
+      console.log(err.toString());
     });
 });
