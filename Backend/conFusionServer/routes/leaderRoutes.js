@@ -1,57 +1,66 @@
 const express = require('express');
 const leaderRouter = express.Router();
+const LeaderModel = require('../models/leaders');
 
 leaderRouter.use(express.json());
 
 leaderRouter
   .route('/')
-  .all((req, res, next) => {
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    next();
-  })
   .get((req, res, next) => {
-    res.end('Will send all the leaders to you!');
+    LeaderModel.find({})
+      .then(leader => res.json(leader))
+      .catch(err => res.send(err));
   })
   .post((req, res, next) => {
-    res.end(
-      'Will add the leader: ' +
-        req.body.name +
-        ' with details: ' +
-        req.body.description
-    );
+    LeaderModel.create(req.body)
+      .then(leader => res.json(leader))
+      .catch(err => res.status(400).send(err));
   })
   .put((req, res, next) => {
-    res.statusCode = 403;
-    res.end('PUT operation not supported on /leaders');
+    LeaderModel.findOne({ name: req.body.name })
+      .then(leader => {
+        if (leader) {
+          return leader.update({
+            $set: req.body
+          });
+        }
+      })
+      .then(leader => res.json(leader))
+      .catch(err => res.send(err));
   })
 
   .delete((req, res, next) => {
-    res.end('Deleting all leaders');
+    LeaderModel.remove({})
+      .then(leader => res.json(leader))
+      .catch(err => res.send(err));
   });
 
 leaderRouter
   .route('/:id')
   .get((req, res, next) => {
-    res.end(`Will send leader ${req.params.id} to you!`);
+    LeaderModel.findById(req.params.id)
+      .then(leader => res.json(leader))
+      .catch(err => res.send(err));
   })
   .post((req, res, next) => {
-    res.end(
-      'Will add the leader: ' +
-        req.body.name +
-        ' with details: ' +
-        req.body.description +
-        ' and id ' +
-        req.params.id
-    );
+    res.end('Not necessary');
   })
   .put((req, res, next) => {
-    res.statusCode = 403;
-    res.end('PUT operation not supported on /leaders/' + req.params.id);
+    LeaderModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: req.body
+      },
+      { new: true }
+    )
+      .then(leader => res.json(leader))
+      .catch(err => res.send(err));
   })
 
   .delete((req, res, next) => {
-    res.end('Deleting leader ' + req.params.id);
+    LeaderModel.findByIdAndDelete(req.params.id)
+      .then(leader => res.json(leader))
+      .catch(err => res.send(err));
   });
 
 module.exports = leaderRouter;
