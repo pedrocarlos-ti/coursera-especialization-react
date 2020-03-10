@@ -1,11 +1,10 @@
 var passport = require('passport');
 var User = require('./models/user');
 
-// Old
-// var LocalStrategy = require('passport-local').Strategy;
-// passport.use(new LocalStrategy(User.authenticate()));
-// passport.serializeUser(User.serializeUser());
-// passport.deserializeUser(User.deserializeUser());
+var LocalStrategy = require('passport-local').Strategy;
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 //JWT
 var JwtStrategy = require('passport-jwt').Strategy;
