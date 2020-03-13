@@ -205,49 +205,36 @@ dishRouter
     DishesModel.findById(req.params.dishId)
       .then(
         dish => {
-          const userComment = dish.comments.find(
-            comment => comment._id == commentID
-          );
-
-          const oldComments = dish.comments.filter(
-            comment => comment._id != commentID
-          );
-
-          if (userComment) {
-            const isUser = userID == userComment.author.toString();
-
-            if (isUser) {
-              if (userComment._id == commentID) {
-                if (req.body.rating) {
-                  userComment.rating = req.body.rating;
-                }
-                if (req.body.comment) {
-                  userComment.comment = req.body.comment;
-                }
-              }
-
-              dish
-                .save({ dish, comments: [...oldComments, userComment] })
-                .then(dish => {
-                  DishesModel.findById(dish._id)
-                    .populate('comments.author')
-                    .then(dish => {
-                      res.statusCode = 200;
-                      res.setHeader('Content-Type', 'application/json');
-                      res.json(dish);
-                    }),
-                    err => next(err);
-                });
-            } else {
-              err = new Error(
-                'Just the user that create the comment can delete'
-              );
-              err.status = 404;
-              return next(err);
+          if (
+            dish != null &&
+            dish.comments.id(req.params.commentId) != null &&
+            dish.comments.id(req.params.commentId).author.equals(req.user._id)
+          ) {
+            if (req.body.rating) {
+              dish.comments.id(req.params.commentId).rating = req.body.rating;
             }
-          } else {
-            err = new Error('Comment not exists');
+            if (req.body.comment) {
+              dish.comments.id(req.params.commentId).comment = req.body.comment;
+            }
+            dish.save().then(
+              dish => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(dish);
+              },
+              err => next(err)
+            );
+          } else if (dish == null) {
+            err = new Error('Dish ' + req.params.dishId + ' not found');
             err.status = 404;
+            return next(err);
+          } else if (dish.comments.id(req.params.commentId) == null) {
+            err = new Error('Comment ' + req.params.commentId + ' not found');
+            err.status = 404;
+            return next(err);
+          } else {
+            err = new Error('you are not authorized to update this comment!');
+            err.status = 403;
             return next(err);
           }
         },
@@ -262,35 +249,31 @@ dishRouter
     DishesModel.findById(req.params.dishId)
       .then(
         dish => {
-          const userComment = dish.comments.find(
-            comment => comment._id == commentID
-          );
-
-          if (userComment) {
-            const isUser = userID == userComment.author.toString();
-
-            if (isUser) {
-              dish.comments.id(req.params.commentId).remove();
-              dish.save().then(dish => {
-                DishesModel.findById(dish._id)
-                  .populate('comments.author')
-                  .then(dish => {
-                    res.statusCode = 200;
-                    res.setHeader('Content-Type', 'application/json');
-                    res.json(dish);
-                  }),
-                  err => next(err);
-              });
-            } else {
-              err = new Error(
-                'Just the user that create the comment can delete'
-              );
-              err.status = 404;
-              return next(err);
-            }
-          } else {
-            err = new Error('Comment not exist');
+          if (
+            dish != null &&
+            dish.comments.id(req.params.commentId) != null &&
+            dish.comments.id(req.params.commentId).author.equals(req.user._id)
+          ) {
+            dish.comments.id(req.params.commentId).remove();
+            dish.save().then(
+              dish => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json(dish);
+              },
+              err => next(err)
+            );
+          } else if (dish == null) {
+            err = new Error('Dish ' + req.params.dishId + ' not found');
             err.status = 404;
+            return next(err);
+          } else if (dish.comments.id(req.params.commentId) == null) {
+            err = new Error('Comment ' + req.params.commentId + ' not found');
+            err.status = 404;
+            return next(err);
+          } else {
+            err = new Error('you are not authorized to delete this comment!');
+            err.status = 403;
             return next(err);
           }
         },
