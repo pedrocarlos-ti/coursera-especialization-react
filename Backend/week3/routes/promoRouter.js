@@ -12,12 +12,12 @@ promoRouter
       .then(promo => res.json(promo))
       .catch(err => res.send(err));
   })
-  .post(authenticate.verifyUser, (req, res, next) => {
+  .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     PromoModel.create(req.body)
       .then(newPromo => res.json(newPromo))
       .catch(err => res.status(400).send(err));
   })
-  .put(authenticate.verifyUser, (req, res, next) => {
+  .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     PromoModel.findOne({ name: req.body.name })
       .then(promo => {
         if (promo) {
@@ -30,11 +30,15 @@ promoRouter
       .catch(err => res.send(err));
   })
 
-  .delete(authenticate.verifyUser, (req, res, next) => {
-    PromoModel.remove({})
-      .then(promo => res.json(promo))
-      .catch(err => res.send(err));
-  });
+  .delete(
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    (req, res, next) => {
+      PromoModel.remove({})
+        .then(promo => res.json(promo))
+        .catch(err => res.send(err));
+    }
+  );
 
 promoRouter
   .route('/:id')
@@ -43,10 +47,10 @@ promoRouter
       .then(promo => res.json(promo))
       .catch(err => res.send(err));
   })
-  .post(authenticate.verifyUser, (req, res, next) => {
+  .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.status(501).end();
   })
-  .put(authenticate.verifyUser, (req, res, next) => {
+  .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     PromoModel.findByIdAndUpdate(
       req.params.id,
       {
@@ -58,10 +62,14 @@ promoRouter
       .catch(err => res.send(err));
   })
 
-  .delete(authenticate.verifyUser, (req, res, next) => {
-    PromoModel.findByIdAndDelete(req.params.id)
-      .then(promo => res.json(promo))
-      .catch(err => res.send(err));
-  });
+  .delete(
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    (req, res, next) => {
+      PromoModel.findByIdAndDelete(req.params.id)
+        .then(promo => res.json(promo))
+        .catch(err => res.send(err));
+    }
+  );
 
 module.exports = promoRouter;

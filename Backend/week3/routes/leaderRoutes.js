@@ -12,12 +12,12 @@ leaderRouter
       .then(leader => res.json(leader))
       .catch(err => res.send(err));
   })
-  .post(authenticate.verifyUser, (req, res, next) => {
+  .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     LeaderModel.create(req.body)
       .then(leader => res.json(leader))
       .catch(err => res.status(400).send(err));
   })
-  .put(authenticate.verifyUser, (req, res, next) => {
+  .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     LeaderModel.findOne({ name: req.body.name })
       .then(leader => {
         if (leader) {
@@ -30,11 +30,15 @@ leaderRouter
       .catch(err => res.send(err));
   })
 
-  .delete(authenticate.verifyUser, (req, res, next) => {
-    LeaderModel.remove({})
-      .then(leader => res.json(leader))
-      .catch(err => res.send(err));
-  });
+  .delete(
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    (req, res, next) => {
+      LeaderModel.remove({})
+        .then(leader => res.json(leader))
+        .catch(err => res.send(err));
+    }
+  );
 
 leaderRouter
   .route('/:id')
@@ -43,10 +47,10 @@ leaderRouter
       .then(leader => res.json(leader))
       .catch(err => res.send(err));
   })
-  .post(authenticate.verifyUser, (req, res, next) => {
+  .post(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     res.end('Not necessary');
   })
-  .put(authenticate.verifyUser, (req, res, next) => {
+  .put(authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
     LeaderModel.findByIdAndUpdate(
       req.params.id,
       {
@@ -58,10 +62,14 @@ leaderRouter
       .catch(err => res.send(err));
   })
 
-  .delete(authenticate.verifyUser, (req, res, next) => {
-    LeaderModel.findByIdAndDelete(req.params.id)
-      .then(leader => res.json(leader))
-      .catch(err => res.send(err));
-  });
+  .delete(
+    authenticate.verifyUser,
+    authenticate.verifyAdmin,
+    (req, res, next) => {
+      LeaderModel.findByIdAndDelete(req.params.id)
+        .then(leader => res.json(leader))
+        .catch(err => res.send(err));
+    }
+  );
 
 module.exports = leaderRouter;
