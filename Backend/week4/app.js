@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const passport = require('passport');
 const authenticate = require('./authenticate');
+const multer = require('multer');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -16,6 +17,28 @@ const session = require('express-session');
 const FileStore = require('session-file-store')(session);
 
 var config = require('./config');
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'public/images');
+  },
+
+  filename: (req, file, cb) => {
+    cb(null, file.originalname);
+  }
+});
+
+const imageFileFilter = (req, file, cb) => {
+  if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+    return cb(new Error('You can upload only image files!'), false);
+  }
+  cb(null, true);
+};
+
+const upload = multer({
+  storage: storage,
+  fileFilter: imageFileFilter
+});
 
 const mongoose = require('mongoose');
 
@@ -51,6 +74,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/dishes', dishRoutes);
 app.use('/promotions', promoRoutes);
 app.use('/leaders', leaderRoutes);
+
+app.post('/files', upload.single('imagem'), (req, res, next) => {
+  res.json(req.file);
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
