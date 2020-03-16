@@ -12,6 +12,7 @@ const usersRouter = require('./routes/users');
 const dishRoutes = require('./routes/dishRoutes');
 const promoRoutes = require('./routes/promoRouter');
 const leaderRoutes = require('./routes/leaderRoutes');
+const favoriteRoutes = require('./routes/favoriteRoutes');
 
 const session = require('express-session');
 const FileStore = require('session-file-store')(session);
@@ -74,6 +75,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/dishes', dishRoutes);
 app.use('/promotions', promoRoutes);
 app.use('/leaders', leaderRoutes);
+app.use('/favorites', favoriteRoutes);
 
 app.post('/files', upload.single('imagem'), (req, res, next) => {
   res.json(req.file);
