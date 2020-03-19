@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, FlatList, Text, Alert } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import { ListItem } from 'react-native-elements';
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
@@ -56,14 +57,16 @@ class Favorites extends Component {
 
       return (
         <Swipeout right={rightButton} autoClose={true}>
-          <ListItem
-            key={index}
-            title={item.name}
-            subtitle={item.description}
-            hideChevron={true}
-            onPress={() => navigate('Dishdetail', { dishId: item.id })}
-            leftAvatar={{ source: { uri: baseUrl + item.image } }}
-          />
+          <Animatable.View animation="fadeInRightBig" duration={2000}>
+            <ListItem
+              key={index}
+              title={item.name}
+              subtitle={item.description}
+              hideChevron={true}
+              onPress={() => navigate('Dishdetail', { dishId: item.id })}
+              leftAvatar={{ source: { uri: baseUrl + item.image } }}
+            />
+          </Animatable.View>
         </Swipeout>
       );
     };
