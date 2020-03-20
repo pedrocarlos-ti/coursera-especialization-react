@@ -1,4 +1,6 @@
 import { createStore, combineReducers, applyMiddleware } from 'redux';
+import { persistStore, persistCombineReducers } from 'redux-persist';
+import { AsyncStorage } from 'react-native';
 import thunk from 'redux-thunk';
 import logger from 'redux-logger';
 import { dishes } from './dishes';
@@ -7,8 +9,14 @@ import { promotions } from './promotions';
 import { leaders } from './leaders';
 import { favorites } from './favorites';
 
-export default store = createStore(
-  combineReducers({
+const config = {
+  key: 'root',
+  storage: AsyncStorage,
+  debug: true
+};
+
+export const store = createStore(
+  persistCombineReducers(config, {
     dishes,
     comments,
     promotions,
@@ -17,3 +25,5 @@ export default store = createStore(
   }),
   applyMiddleware(thunk, logger)
 );
+
+export const persistor = persistStore(store);
