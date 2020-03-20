@@ -8,7 +8,8 @@ import {
   Modal,
   Button,
   Alert,
-  PanResponder
+  PanResponder,
+  Share
 } from 'react-native';
 import { Card, Icon, Rating, Input } from 'react-native-elements';
 import { connect } from 'react-redux';
@@ -155,6 +156,19 @@ function RenderDish(props) {
 
   handleViewRef = ref => (this.view = ref);
 
+  function shareDish(title, message, url) {
+    Share.share(
+      {
+        title,
+        url,
+        message: `${title} - ${message} - ${url}`
+      },
+      {
+        dialogTitle: `Share ${title} with... `
+      }
+    );
+  }
+
   const recognizeDrag = ({ moveX, moveY, dx, dy }) => {
     if (dx < -200) return true;
     else return false;
@@ -236,6 +250,17 @@ function RenderDish(props) {
               type="font-awesome"
               color="#512DA7"
               onPress={() => props.openModal()}
+            />
+
+            <Icon
+              raised
+              reverse
+              name="share"
+              type="font-awesome"
+              color="#51D2A8"
+              onPress={() =>
+                shareDish(dish.name, dish.description, baseUrl + dish.image)
+              }
             />
           </View>
         </Card>
